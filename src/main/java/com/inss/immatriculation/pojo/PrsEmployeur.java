@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "PRS_EMPLOYEUR") // Remplacez par le nom réel de votre table si différent
@@ -16,22 +18,24 @@ public class PrsEmployeur {
 
     // --- Section 1 ---
 
+    
     @Id
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "emp_seq") // Décommenter si auto-généré
-    // @SequenceGenerator(name = "emp_seq", sequenceName = "VOTRE_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "emp_seq")
+    @SequenceGenerator(name = "emp_seq", sequenceName = "seq_prs_employeur", allocationSize = 1) // Assurez-vous que le nom correspond
     @Column(name = "EMP_SEQUENCE", nullable = false)
+    
     private Long empSequence;
 
     @Column(name = "EMP_AFFILIATION")
     private Long empAffiliation;
 
-    @Column(name = "EMP_NOM", length = 100, nullable = false)
+    @Column(name = "EMP_NOM", length = 300, nullable = false)
     private String empNom;
 
-    @Column(name = "EMP_PRENOM", length = 50)
+    @Column(name = "EMP_PRENOM", length = 250)
     private String empPrenom;
 
-    @Column(name = "EMP_ABREV", length = 10)
+    @Column(name = "EMP_ABREV", length = 100, nullable=false)
     private String empAbrev;
 
     @Column(name = "EMP_DT_CREE_ENTR", nullable = false)
@@ -61,7 +65,7 @@ public class PrsEmployeur {
     @Column(name = "EMP_NBRE_TRAVAILL", nullable = false) // Nom tronqué dans l'image
     private Long empNbreTravaill;
 
-    @Column(name = "EMP_NAT_JURIDIQUE", length = 6)
+    @Column(name = "EMP_NAT_JURIDIQUE", length = 100)
     private String empNatJuridique;
 
     @Column(name = "EMP_RUE", length = 50)
@@ -79,19 +83,19 @@ public class PrsEmployeur {
     @Column(name = "EMP_TELEPHONE", length = 20, nullable = false)
     private String empTelephone;
 
-    @Column(name = "EMP_PAYS", length = 6)
+    @Column(name = "EMP_PAYS", length = 50)
     private String empPays;
 
-    @Column(name = "EMP_PROVINCE", length = 6, nullable = false)
+    @Column(name = "EMP_PROVINCE", length = 50, nullable = false)
     private String empProvince;
 
-    @Column(name = "EMP_COMMUNE", length = 6, nullable = false)
+    @Column(name = "EMP_COMMUNE", length = 50, nullable = false)
     private String empCommune;
 
-    @Column(name = "EMP_AGENCE", length = 6)
+    @Column(name = "EMP_AGENCE", length = 50)
     private String empAgence;
 
-    @Column(name = "EMP_COLLINE", length = 6, nullable = false)
+    @Column(name = "EMP_COLLINE", length = 50, nullable = false)
     private String empColline;
 
     @Column(name = "EMP_EMAIL", length = 20)
@@ -117,7 +121,7 @@ public class PrsEmployeur {
     @Column(name = "EMP_VILLE_C", length = 50)
     private String empVilleC;
 
-    @Column(name = "EMP_PAYS_C", length = 6)
+    @Column(name = "EMP_PAYS_C", length = 20)
     private String empPaysC;
 
     @Column(name = "EMP_TELEPHONE_C", length = 20)
@@ -132,25 +136,25 @@ public class PrsEmployeur {
     @Column(name = "EMP_VILLE_P", length = 50)
     private String empVilleP;
 
-    @Column(name = "EMP_PAYS_P", length = 6)
+    @Column(name = "EMP_PAYS_P", length = 20)
     private String empPaysP;
 
     @Column(name = "EMP_FAX_P", length = 20)
     private String empFaxP;
 
-    @Column(name = "EMP_FREQUENCE_PAIE", length = 6)
+    @Column(name = "EMP_FREQUENCE_PAIE", length = 20)
     private String empFrequencePaie;
 
     @Column(name = "EMP_DT_PREMIER_EM", nullable = false)
     private LocalDate empDtPremierEm;
 
-    @Column(name = "EMP_ASSURANCE", length = 2, nullable = false)
+    @Column(name = "EMP_ASSURANCE", length = 20, nullable = false)
     private String empAssurance;
 
-    @Column(name = "EMP_ETAT", length = 1, nullable = false)
+    @Column(name = "EMP_ETAT", length = 10, nullable = false)
     private String empEtat;
 
-    @Column(name = "EMP_CODE_FISCAL", length = 10, nullable = false)
+    @Column(name = "EMP_CODE_FISCAL", length = 20, nullable = false)
     private String empCodeFiscal;
 
     @Column(name = "EMP_REG_COMMERCE", length = 20, nullable = false)
@@ -168,10 +172,10 @@ public class PrsEmployeur {
     @Column(name = "EMP_EMAIL_P", length = 20)
     private String empEmailP;
 
-    @Column(name = "EMP_DECISION", length = 1)
+    @Column(name = "EMP_DECISION", length = 20)
     private String empDecision;
 
-    @Column(name = "EMP_RAISON", length = 6)
+    @Column(name = "EMP_RAISON", length = 20)
     private String empRaison;
 
     @Column(name = "EMP_DT_CREEE", nullable = false)
@@ -189,7 +193,7 @@ public class PrsEmployeur {
     @Column(name = "EMP_OLD_AFFILIATION")
     private Long empOldAffiliation;
 
-    @Column(name = "EMP_IMPRESSION_PR", length = 1) // Nom tronqué
+    @Column(name = "EMP_IMPRESSION_PR", length = 10) // Nom tronqué
     private String empImpressionPr;
 
     @Column(name = "EMP_COMPTE", length = 20)
@@ -215,12 +219,59 @@ public class PrsEmployeur {
     @Column(name = "EMP_DATE_PAIEMENT")
     private LocalDate empDatePaiement;
 
-    
+    @OneToMany(mappedBy = "employeur", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PrsEmpActivite> activites = new ArrayList<>();
+
+    @OneToMany(mappedBy = "employeur", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PrsEmpSecteur> secteurs = new ArrayList<>();
+
+   // @OneToMany(mappedBy = "employeur", cascade = CascadeType.ALL, orphanRemoval = true)
+   // private List<PrsEmpSousSecteur> sousSecteurs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "employeur", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PrsEmpSituation> situations = new ArrayList<>();
+
+	/*
+	 * @OneToMany(mappedBy = "employeur", cascade = CascadeType.ALL, orphanRemoval =
+	 * true) private List<PrsDocument> documents = new ArrayList<>();
+	 */
+    // Getters et Setters pour ces listes...
     
     
 
 	public Long getEmpSequence() {
 		return empSequence;
+	}
+
+	public List<PrsEmpActivite> getActivites() {
+		return activites;
+	}
+
+	public void setActivites(List<PrsEmpActivite> activites) {
+		this.activites = activites;
+	}
+
+	public List<PrsEmpSecteur> getSecteurs() {
+		return secteurs;
+	}
+
+	public void setSecteurs(List<PrsEmpSecteur> secteurs) {
+		this.secteurs = secteurs;
+	}
+
+	/*
+	 * public List<PrsEmpSousSecteur> getSousSecteurs() { return sousSecteurs; }
+	 * 
+	 * public void setSousSecteurs(List<PrsEmpSousSecteur> sousSecteurs) {
+	 * this.sousSecteurs = sousSecteurs; }
+	 */
+
+	public List<PrsEmpSituation> getSituations() {
+		return situations;
+	}
+
+	public void setSituations(List<PrsEmpSituation> situations) {
+		this.situations = situations;
 	}
 
 	public void setEmpSequence(Long empSequence) {

@@ -13,13 +13,13 @@ public class PrsEmpActiviteId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-	@Column(name = "eact_activite", nullable = false, length = 6)
+	@Column(name = "eact_activite", nullable = false, length = 20)
     private String eactActivite;
 
     @Column(name = "eact_dt_debut", nullable = false)
     private LocalDate eactDtDebut;
 
-    @Column(name = "eact_emp_sequence", nullable = false, precision = 10)
+    @Column(name = "eact_emp_sequence", nullable = false, precision = 20)
     private Long eactEmpSequence;
 
     // Lombok @Data génère les getters/setters et equals/hashCode.
@@ -39,4 +39,32 @@ public class PrsEmpActiviteId implements Serializable {
     public int hashCode() {
         return Objects.hash(eactActivite, eactDtDebut, eactEmpSequence);
     }
+
+	public String getEactActivite() {
+		return eactActivite;
+	}
+
+	public void setEactActivite(String eactActivite) {
+		this.eactActivite = eactActivite;
+	}
+
+	public LocalDate getEactDtDebut() {
+		return eactDtDebut;
+	}
+
+	public void setEactDtDebut(LocalDate eactDtDebut) {
+		this.eactDtDebut = eactDtDebut;
+	}
+
+	public Long getEactEmpSequence() {
+		return eactEmpSequence;
+	}
+
+	public void setEactEmpSequence(Long eactEmpSequence) {
+		this.eactEmpSequence = eactEmpSequence;
+	}
+    
+    
+    
+    
 }

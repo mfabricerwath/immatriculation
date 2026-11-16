@@ -44,4 +44,30 @@ public class PrsEmpSituationId implements Serializable {
     public int hashCode() {
         return Objects.hash(esitOperation, esitDtLettre, esitEmpSequence);
     }
+
+	public String getEsitOperation() {
+		return esitOperation;
+	}
+
+	public void setEsitOperation(String esitOperation) {
+		this.esitOperation = esitOperation;
+	}
+
+	public LocalDate getEsitDtLettre() {
+		return esitDtLettre;
+	}
+
+	public void setEsitDtLettre(LocalDate esitDtLettre) {
+		this.esitDtLettre = esitDtLettre;
+	}
+
+	public Long getEsitEmpSequence() {
+		return esitEmpSequence;
+	}
+
+	public void setEsitEmpSequence(Long esitEmpSequence) {
+		this.esitEmpSequence = esitEmpSequence;
+	}
+    
+    
 }

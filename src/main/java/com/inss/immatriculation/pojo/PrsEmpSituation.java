@@ -22,19 +22,19 @@ public class PrsEmpSituation {
     @Column(name = "esit_util_modifie", length = 15)
     private String esitUtilModifie;
 
-    @Column(name = "esit_raison", length = 6)
+    @Column(name = "esit_raison", length = 20)
     private String esitRaison;
 
     @Column(name = "esit_dt_effet", nullable = false)
     private LocalDate esitDtEffet;
 
-    @Column(name = "esit_util_cree", nullable = false, length = 15)
+    @Column(name = "esit_util_cree", nullable = false, length = 25)
     private String esitUtilCree;
 
     @Column(name = "esit_dt_cre" + "ee", nullable = false)
     private LocalDateTime esitDtCreee;
 
-    @Column(name = "esit_affiliation", precision = 10)
+    @Column(name = "esit_affiliation", precision = 20)
     private Long esitAffiliation;
 
     @Column(name = "esit_dt_modifiee")
@@ -48,6 +48,24 @@ public class PrsEmpSituation {
                 referencedColumnName = "emp_sequence",
                 insertable = false, updatable = false)
     private PrsEmployeur employeur;
+    
+    
+    // Dans PrsEmpSituation.java
+    public String getEsitOperation() {
+        return id != null ? id.getEsitOperation() : null;
+    }
+    public void setEsitOperation(String esitOperation) {
+        if (id == null) id = new PrsEmpSituationId();
+        id.setEsitOperation(esitOperation);
+    }
+    public LocalDate getEsitDtLettre() {
+        return id != null ? id.getEsitDtLettre() : null;
+    }
+    public void setEsitDtLettre(LocalDate esitDtLettre) {
+        if (id == null) id = new PrsEmpSituationId();
+        id.setEsitDtLettre(esitDtLettre);
+    }
+    
 
 	public PrsEmpSituationId getId() {
 		return id;

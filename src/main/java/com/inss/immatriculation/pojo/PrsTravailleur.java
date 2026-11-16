@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Entity
 @Data
 @Table(name = "PRS_TRAVAILLEUR")
-public class Travailleur {
+public class PrsTravailleur {
 
     @Id
     @Column(name = "TRV_IMMATRICULATION", length = 10, nullable = false)

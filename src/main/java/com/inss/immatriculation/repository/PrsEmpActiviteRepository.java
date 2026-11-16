@@ -9,4 +9,5 @@ public interface PrsEmpActiviteRepository extends JpaRepository<PrsEmpActivite, 
     
     // Méthode pratique pour chercher les activités d'un employeur spécifique
     List<PrsEmpActivite> findById_EactEmpSequence(Long empSequence);
+    boolean existsById_EactEmpSequence(Long empSequence);
 }

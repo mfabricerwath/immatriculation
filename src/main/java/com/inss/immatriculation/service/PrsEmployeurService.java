@@ -1,48 +1,240 @@
 package com.inss.immatriculation.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inss.immatriculation.pojo.PrsEmpActivite;
+import com.inss.immatriculation.pojo.PrsEmpActiviteId;
 import com.inss.immatriculation.pojo.PrsEmpHistorique;
+import com.inss.immatriculation.pojo.PrsEmpSecteur;
+import com.inss.immatriculation.pojo.PrsEmpSecteurId;
+import com.inss.immatriculation.pojo.PrsEmpSituation;
+import com.inss.immatriculation.pojo.PrsEmpSituationId;
 import com.inss.immatriculation.pojo.PrsEmployeur;
+import com.inss.immatriculation.repository.PrsDocumentRepository;
+import com.inss.immatriculation.repository.PrsEmpActiviteRepository;
 import com.inss.immatriculation.repository.PrsEmpHistoriqueRepository;
+import com.inss.immatriculation.repository.PrsEmpSecteurRepository;
+import com.inss.immatriculation.repository.PrsEmpSituationRepository;
+import com.inss.immatriculation.repository.PrsEmpSousSecteurRepository;
 import com.inss.immatriculation.repository.PrsEmployeurRepository;
-
-import java.time.LocalDate;
-import java.util.Objects;
 
 @Service
 public class PrsEmployeurService {
 
     private final PrsEmployeurRepository employeurRepo;
     private final PrsEmpHistoriqueRepository histRepo;
+    private final PrsEmpActiviteRepository activiteRepo;
+    private final PrsEmpSituationRepository situationRepo;
+    private final PrsEmpSecteurRepository secteurRepo;
+    private final PrsDocumentRepository documentRepo;
+    private final JdbcTemplate jdbcTemplate; // Ajouté pour générer l'affiliation
 
     public PrsEmployeurService(PrsEmployeurRepository employeurRepo,
-                               PrsEmpHistoriqueRepository histRepo) {
+                               PrsEmpHistoriqueRepository histRepo,
+                               PrsEmpActiviteRepository activiteRepo,
+                               PrsEmpSituationRepository situationRepo,
+                               PrsEmpSecteurRepository secteurRepo,
+                               PrsEmpSousSecteurRepository sousSecteurRepo,
+                               PrsDocumentRepository documentRepo,
+                               JdbcTemplate jdbcTemplate) {
         this.employeurRepo = employeurRepo;
         this.histRepo = histRepo;
+        this.activiteRepo = activiteRepo;
+        this.situationRepo = situationRepo;
+        this.secteurRepo = secteurRepo;
+        this.documentRepo = documentRepo;
+        this.jdbcTemplate = jdbcTemplate;
     }
+
+    // ==========================================
+    // MÉTHODES CRUD DE BASE
+    // ==========================================
+
+    public List<PrsEmployeur> findAll() {
+        return employeurRepo.findAll();
+    }
+
+    public Optional<PrsEmployeur> findById(Long id) {
+        return employeurRepo.findById(id);
+    }
+
+  
+    @Transactional
+    public PrsEmployeur save(PrsEmployeur employeur) {
+        // --- 1. RÈGLES MÉTIER ---
+        if (employeur.getEmpNom() != null && employeur.getEmpDtNaissance() != null) {
+            Long count = employeurRepo.countByEmpNomAndEmpDtNaissance(
+                    employeur.getEmpNom(), employeur.getEmpDtNaissance());
+            if (count > 0) {
+                throw new RuntimeException("PRS-000007: Un employeur avec ce nom et cette date de naissance existe déjà.");
+            }
+        }
+
+        if ("N".equals(employeur.getEmpAssurance())) {
+            if (employeur.getEmpNbreTravaill() == null || employeur.getEmpNbreTravaill() < 1) {
+                throw new RuntimeException("PRS-000008: Le nombre de travailleurs doit être supérieur à 0.");
+            }
+        }
+
+        // --- 2. AFFILIATION & DATE EMPLOYEUR ---
+        if (employeur.getEmpAffiliation() == null) {
+            Long nouvelleAffiliation = jdbcTemplate.queryForObject("SELECT nextval('seq_prs_affiliation')", Long.class);
+            employeur.setEmpAffiliation(nouvelleAffiliation);
+        }
+
+        if (employeur.getEmpSequence() == null) {
+            employeur.setEmpDtCreee(LocalDateTime.now());
+            employeur.setEmpUtilCreee(currentUser());
+        }
+
+        // --- 3. DÉTACHEMENT TEMPORAIRE ---
+        List<PrsEmpActivite> activites = employeur.getActivites();
+        List<PrsEmpSecteur> secteurs = employeur.getSecteurs();
+        List<PrsEmpSituation> situations = employeur.getSituations();
+        
+        employeur.setActivites(null);
+        employeur.setSecteurs(null);
+        employeur.setSituations(null);
+
+        // --- 4. SAUVEGARDE EMPLOYEUR ---
+        PrsEmployeur savedEmployeur = employeurRepo.saveAndFlush(employeur);
+
+        // --- 5. RÉATTACHEMENT ---
+
+        // A. Activités
+        if (activites != null && !activites.isEmpty()) {
+            activites.forEach(a -> {
+                a.setEmployeur(savedEmployeur);
+                if (a.getId() == null) a.setId(new PrsEmpActiviteId());
+                a.getId().setEactEmpSequence(savedEmployeur.getEmpSequence());
+                a.setEactAffiliation(savedEmployeur.getEmpAffiliation());
+                if (a.getEactDtCreee() == null) a.setEactDtCreee(LocalDateTime.now());
+                if (a.getEactUtilCree() == null) a.setEactUtilCree(currentUser());
+            });
+            savedEmployeur.setActivites(activites);
+        }
+
+        // B. Secteurs
+        if (secteurs != null && !secteurs.isEmpty()) {
+            secteurs.forEach(s -> {
+                s.setEmployeur(savedEmployeur);
+                if (s.getId() == null) s.setId(new PrsEmpSecteurId());
+                s.getId().setEsecEmpSequence(savedEmployeur.getEmpSequence());
+                s.setEsecAffiliation(savedEmployeur.getEmpAffiliation());
+                if (s.getEsecDtCreee() == null) s.setEsecDtCreee(LocalDateTime.now());
+                if (s.getEsecUtilCree() == null) s.setEsecUtilCree(currentUser());
+            });
+            savedEmployeur.setSecteurs(secteurs);
+        }
+
+        // C. Situations
+        if (situations != null && !situations.isEmpty()) {
+            situations.forEach(s -> {
+                s.setEmployeur(savedEmployeur);
+                if (s.getId() == null) s.setId(new PrsEmpSituationId());
+                
+                // ⚠️ IMPORTANT : On s'assure que esitDtLettre et esitOperation sont bien dans l'ID
+                // (Ils sont normalement remplis par Angular via les setters délégués)
+                if (s.getId().getEsitDtLettre() == null) {
+                    s.getId().setEsitDtLettre(s.getEsitDtLettre());
+                }
+                if (s.getId().getEsitOperation() == null) {
+                    s.getId().setEsitOperation(s.getEsitOperation());
+                }
+                
+                s.getId().setEsitEmpSequence(savedEmployeur.getEmpSequence());
+                s.setEsitAffiliation(savedEmployeur.getEmpAffiliation());
+                // Initialisation des champs d'audit
+                if (s.getEsitDtCreee() == null) s.setEsitDtCreee(LocalDateTime.now());
+                if (s.getEsitUtilCree() == null) s.setEsitUtilCree(currentUser());
+            });
+            savedEmployeur.setSituations(situations);
+        }
+
+        // --- 6. SAUVEGARDE FINALE ---
+        return employeurRepo.save(savedEmployeur);
+    }
+    
+    
+    
+    @Transactional
+    public void delete(Long id) {
+        // --- RÈGLES MÉTIER (On Check Delete Master) ---
+        PrsEmployeur employeur = employeurRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employeur introuvable"));
+
+        if (activiteRepo.existsById_EactEmpSequence(id)) {
+            throw new RuntimeException("Suppression impossible : des activités sont liées à cet employeur.");
+        }
+        if (situationRepo.existsById_EsitEmpSequence(id)) {
+            throw new RuntimeException("Suppression impossible : des situations sont liées à cet employeur.");
+        }
+        if (secteurRepo.existsById_EsecEmpSequence(id)) {
+            throw new RuntimeException("Suppression impossible : des secteurs sont liés à cet employeur.");
+        }
+        if (employeur.getEmpAffiliation() != null && documentRepo.existsByDocAffiliation(employeur.getEmpAffiliation())) {
+            throw new RuntimeException("Suppression impossible : des documents sont liés à cet employeur.");
+        }
+
+        employeurRepo.deleteById(id);
+    }
+
+    // ==========================================
+    // MISE À JOUR AVEC HISTORIQUE (Ancien Trigger)
+    // ==========================================
 
     @Transactional
     public PrsEmployeur update(Long id, PrsEmployeur nouveau) {
         PrsEmployeur ancien = employeurRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employeur introuvable: " + id));
 
-        // Le trigger ne s'active que si l'ancienne décision = 'A'
+        // --- RÈGLES MÉTIER (Pre-Update) ---
+        
+        if (nouveau.getEmpNom() != null && nouveau.getEmpDtNaissance() != null) {
+            Long count = employeurRepo.countByEmpNomAndEmpDtNaissance(
+                    nouveau.getEmpNom(), nouveau.getEmpDtNaissance());
+            if (count >= 2) {
+                throw new RuntimeException("PRS-000007: Doublon détecté (Nom + Date de naissance).");
+            }
+        }
+
+        if ("N".equals(nouveau.getEmpAssurance())) {
+            if (nouveau.getEmpNbreTravaill() == null || nouveau.getEmpNbreTravaill() < 1) {
+                throw new RuntimeException("PRS-000008: Le nombre de travailleurs doit être supérieur à 0.");
+            }
+        }
+
+        // Si l'affiliation change (rare en modification), on la génère
+        if ("A".equals(nouveau.getEmpDecision()) && nouveau.getEmpAffiliation() == null) {
+            Long nouvelleAffiliation = jdbcTemplate.queryForObject("SELECT nextval('seq_prs_affiliation')", Long.class);
+            nouveau.setEmpAffiliation(nouvelleAffiliation); 
+        }
+
+        // --- LOGIQUE D'HISTORIQUE ---
         if ("A".equals(ancien.getEmpDecision())) {
             insertHistorique(ancien, nouveau);
         }
 
-        // copier les champs de "nouveau" vers "ancien" (ou save(nouveau))
+        // Copier les champs du nouveau vers l'ancien
         copierChamps(ancien, nouveau);
+        
         return employeurRepo.save(ancien);
     }
 
+    // ==========================================
+    // LOGIQUE D'HISTORIQUE (Réimplémentation du trigger)
+    // ==========================================
+
     private void insertHistorique(PrsEmployeur o, PrsEmployeur n) {
         Long aff = n.getEmpAffiliation();
-
-        // Cas particulier du trigger Oracle : AFFILIATION
+        
         if (diff(o.getEmpAffiliation(), n.getEmpAffiliation())) {
             histRepo.save(build("AFFILIATION", n.getEmpSequence(),
                     str(o.getEmpAffiliation()), str(n.getEmpAffiliation()), aff));
@@ -154,14 +346,13 @@ public class PrsEmployeurService {
             histRepo.save(build("FAX POSTALE", n.getEmpSequence(), o.getEmpFaxP(), n.getEmpFaxP(), aff));
     }
 
-    private PrsEmpHistorique build(String libelle, Long empSeq,
-                                   String avant, String apres, Long affiliation) {
+    private PrsEmpHistorique build(String libelle, Long empSeq, String avant, String apres, Long affiliation) {
         PrsEmpHistorique h = new PrsEmpHistorique();
         h.setEhisLibelle(libelle);
         h.setEhisEmpSequence(empSeq);
         h.setEhisValeurAvant(avant);
         h.setEhisValeurApres(apres);
-        h.setEhisDtCreee(LocalDate.now());
+        h.setEhisDtCreee(java.time.LocalDate.now());
         h.setEhisUtilCree(currentUser());
         h.setEhisAffiliation(affiliation);
         return h;
@@ -169,18 +360,19 @@ public class PrsEmployeurService {
 
     private String currentUser() {
         try {
-        	return "mugisha";
-			/*
-			 * return org.springframework.security.core.context.SecurityContextHolder
-			 * .getContext().getAuthentication().getName();
-			 */
+            return "mugisha"; // Votre code actuel
         } catch (Exception e) {
             return "system";
         }
     }
 
-    private boolean diff(Object a, Object b) { return !Objects.equals(a, b); }
-    private String str(Object o) { return o == null ? null : o.toString(); }
+    private boolean diff(Object a, Object b) {
+        return !Objects.equals(a, b);
+    }
+
+    private String str(Object o) {
+        return o == null ? null : o.toString();
+    }
 
     private void copierChamps(PrsEmployeur o, PrsEmployeur n) {
         // --- Identification / affiliation ---
@@ -251,7 +443,7 @@ public class PrsEmployeurService {
 
         // --- Traçabilité (création : on ne touche pas à empDtCreee ni empUtilCree) ---
         o.setEmpDtModifiee(java.time.LocalDateTime.now());
-        o.setEmpUtilModifie(currentUser());   // ou n.getEmpUtilModifie() si fourni par le client
+        o.setEmpUtilModifie(currentUser());
 
         // --- Champs complémentaires ---
         o.setEmpOldAffiliation(n.getEmpOldAffiliation());
