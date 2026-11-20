@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inss.immatriculation.dto.PrsEmployeurDto;
 import com.inss.immatriculation.pojo.PrsEmpActivite;
 import com.inss.immatriculation.pojo.PrsEmpActiviteId;
 import com.inss.immatriculation.pojo.PrsEmpHistorique;
@@ -161,9 +163,7 @@ public class PrsEmployeurService {
         // --- 6. SAUVEGARDE FINALE ---
         return employeurRepo.save(savedEmployeur);
     }
-    
-    
-    
+
     @Transactional
     public void delete(Long id) {
         // --- RÈGLES MÉTIER (On Check Delete Master) ---
@@ -456,4 +456,21 @@ public class PrsEmployeurService {
         o.setEmpBanqueArieres(n.getEmpBanqueArieres());
         o.setEmpDatePaiement(n.getEmpDatePaiement());
     }
+    
+        public PrsEmployeurDto findByAffiliation(Long affiliation) {
+            PrsEmployeur e = employeurRepo.findByEmpAffiliation(affiliation)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    "Aucun employeur trouvé pour l'affiliation : " + affiliation));
+            return toDto(e);
+        }  
+
+    private PrsEmployeurDto toDto(PrsEmployeur e) {
+        return new PrsEmployeurDto(
+            e.getEmpSequence(), e.getEmpAffiliation(),
+            e.getEmpNom(), e.getEmpAbrev(), e.getEmpVille(),
+            e.getEmpTelephone(), e.getEmpEtat()
+        );
+    }
+    
+   
 }

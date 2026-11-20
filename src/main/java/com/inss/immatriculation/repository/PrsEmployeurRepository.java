@@ -1,6 +1,8 @@
 package com.inss.immatriculation.repository;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +21,9 @@ public interface PrsEmployeurRepository extends JpaRepository<PrsEmployeur, Long
     // 3. Optionnel : Si vous voulez aussi faire la vérification d'existence 
     // avant suppression pour les documents (lié par l'affiliation)
     boolean existsByEmpAffiliation(Long empAffiliation);
+    
+    Optional<PrsEmployeur> findByEmpAffiliation(Long empAffiliation);
+    
+    // optionnel : recherche partielle pour autocomplete
+    List<PrsEmployeur> findTop10ByEmpAffiliationStartingWith(Long prefix);
 }

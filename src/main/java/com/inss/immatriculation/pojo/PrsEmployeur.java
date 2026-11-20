@@ -18,7 +18,6 @@ public class PrsEmployeur {
 
     // --- Section 1 ---
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "emp_seq")
     @SequenceGenerator(name = "emp_seq", sequenceName = "seq_prs_employeur", allocationSize = 1) // Assurez-vous que le nom correspond

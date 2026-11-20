@@ -1,5 +1,6 @@
 package com.inss.immatriculation.controller;
 
+import com.inss.immatriculation.dto.PrsEmployeurDto;
 import com.inss.immatriculation.pojo.PrsEmployeur;
 import com.inss.immatriculation.service.PrsEmployeurService;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employeurs")
-@CrossOrigin(origins = "http://localhost:4200")
 public class PrsEmployeurController {
 
     private final PrsEmployeurService employeurService;
@@ -63,4 +63,11 @@ public class PrsEmployeurController {
         employeurService.delete(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping("/by-affiliation/{affiliation}")
+    public ResponseEntity<PrsEmployeurDto> getByAffiliation(@PathVariable Long affiliation) {
+        return ResponseEntity.ok(employeurService.findByAffiliation(affiliation));
+    }
+    
+    
 }

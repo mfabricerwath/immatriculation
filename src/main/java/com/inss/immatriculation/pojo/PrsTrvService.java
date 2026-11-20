@@ -35,7 +35,7 @@ public class PrsTrvService {
     @Column(name = "tser_telephone", length = 10)
     private String tserTelephone;
 
-    @Column(name = "tser_affiliation", precision = 10)
+    @Column(name = "tser_affiliation", precision = 20)
     private Long tserAffiliation;
 
     @Column(name = "tser_code_postal", length = 10)
