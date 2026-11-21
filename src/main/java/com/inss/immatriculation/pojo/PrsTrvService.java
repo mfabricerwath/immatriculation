@@ -17,10 +17,10 @@ public class PrsTrvService {
     @Column(name = "tser_etat", length = 1, nullable = false)
     private String tserEtat;
 
-    @Column(name = "tser_categorie", length = 6, nullable = false)
-    private String tserCategorie;
+    @Column(name = "tser_categorie", length = 6, nullable=true)
+    private String tserCategorie="NAN";
 
-    @Column(name = "tser_type_ass", length = 2, nullable = false)
+    @Column(name = "tser_type_ass", length = 2)
     private String tserTypeAss;
 
     @Column(name = "tser_matricule", length = 10)
@@ -72,150 +72,6 @@ public class PrsTrvService {
     
     
 
-	public PrsTrvServiceId getId() {
-		return id;
-	}
-
-	public void setId(PrsTrvServiceId id) {
-		this.id = id;
-	}
-
-	public String getTserEtat() {
-		return tserEtat;
-	}
-
-	public void setTserEtat(String tserEtat) {
-		this.tserEtat = tserEtat;
-	}
-
-	public String getTserCategorie() {
-		return tserCategorie;
-	}
-
-	public void setTserCategorie(String tserCategorie) {
-		this.tserCategorie = tserCategorie;
-	}
-
-	public String getTserTypeAss() {
-		return tserTypeAss;
-	}
-
-	public void setTserTypeAss(String tserTypeAss) {
-		this.tserTypeAss = tserTypeAss;
-	}
-
-	public String getTserMatricule() {
-		return tserMatricule;
-	}
-
-	public void setTserMatricule(String tserMatricule) {
-		this.tserMatricule = tserMatricule;
-	}
-
-	public String getTserDesignation() {
-		return tserDesignation;
-	}
-
-	public void setTserDesignation(String tserDesignation) {
-		this.tserDesignation = tserDesignation;
-	}
-
-	public BigDecimal getTserSalaire() {
-		return tserSalaire;
-	}
-
-	public void setTserSalaire(BigDecimal tserSalaire) {
-		this.tserSalaire = tserSalaire;
-	}
-
-	public String getTserTelephone() {
-		return tserTelephone;
-	}
-
-	public void setTserTelephone(String tserTelephone) {
-		this.tserTelephone = tserTelephone;
-	}
-
-	public Long getTserAffiliation() {
-		return tserAffiliation;
-	}
-
-	public void setTserAffiliation(Long tserAffiliation) {
-		this.tserAffiliation = tserAffiliation;
-	}
-
-	public String getTserCodePostal() {
-		return tserCodePostal;
-	}
-
-	public void setTserCodePostal(String tserCodePostal) {
-		this.tserCodePostal = tserCodePostal;
-	}
-
-	public String getTserMotif() {
-		return tserMotif;
-	}
-
-	public void setTserMotif(String tserMotif) {
-		this.tserMotif = tserMotif;
-	}
-
-	public LocalDate getTserDtFin() {
-		return tserDtFin;
-	}
-
-	public void setTserDtFin(LocalDate tserDtFin) {
-		this.tserDtFin = tserDtFin;
-	}
-
-	public LocalDateTime getTserDtCreee() {
-		return tserDtCreee;
-	}
-
-	public void setTserDtCreee(LocalDateTime tserDtCreee) {
-		this.tserDtCreee = tserDtCreee;
-	}
-
-	public String getTserUtilCree() {
-		return tserUtilCree;
-	}
-
-	public void setTserUtilCree(String tserUtilCree) {
-		this.tserUtilCree = tserUtilCree;
-	}
-
-	public LocalDateTime getTserDtModifiee() {
-		return tserDtModifiee;
-	}
-
-	public void setTserDtModifiee(LocalDateTime tserDtModifiee) {
-		this.tserDtModifiee = tserDtModifiee;
-	}
-
-	public String getTserUtilModifie() {
-		return tserUtilModifie;
-	}
-
-	public void setTserUtilModifie(String tserUtilModifie) {
-		this.tserUtilModifie = tserUtilModifie;
-	}
-
-	public PrsTravailleur getTravailleur() {
-		return travailleur;
-	}
-
-	public void setTravailleur(PrsTravailleur travailleur) {
-		this.travailleur = travailleur;
-	}
-
-	public PrsEmployeur getEmployeur() {
-		return employeur;
-	}
-
-	public void setEmployeur(PrsEmployeur employeur) {
-		this.employeur = employeur;
-	}
-    
-    
+	
     
 }

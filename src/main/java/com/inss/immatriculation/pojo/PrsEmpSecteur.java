@@ -61,61 +61,7 @@ public class PrsEmpSecteur {
     
 // -----fin delegation pour angular
     
-	public PrsEmpSecteurId getId() {
-		return id;
-	}
+	
 
-	public void setId(PrsEmpSecteurId id) {
-		this.id = id;
-	}
-
-	public Long getEsecAffiliation() {
-		return esecAffiliation;
-	}
-
-	public void setEsecAffiliation(Long esecAffiliation) {
-		this.esecAffiliation = esecAffiliation;
-	}
-
-	public LocalDateTime getEsecDtModifiee() {
-		return esecDtModifiee;
-	}
-
-	public void setEsecDtModifiee(LocalDateTime esecDtModifiee) {
-		this.esecDtModifiee = esecDtModifiee;
-	}
-
-	public LocalDateTime getEsecDtCreee() {
-		return esecDtCreee;
-	}
-
-	public void setEsecDtCreee(LocalDateTime esecDtCreee) {
-		this.esecDtCreee = esecDtCreee;
-	}
-
-	public String getEsecUtilModifie() {
-		return esecUtilModifie;
-	}
-
-	public void setEsecUtilModifie(String esecUtilModifie) {
-		this.esecUtilModifie = esecUtilModifie;
-	}
-
-	public String getEsecUtilCree() {
-		return esecUtilCree;
-	}
-
-	public void setEsecUtilCree(String esecUtilCree) {
-		this.esecUtilCree = esecUtilCree;
-	}
-
-	public PrsEmployeur getEmployeur() {
-		return employeur;
-	}
-
-	public void setEmployeur(PrsEmployeur employeur) {
-		this.employeur = employeur;
-	}
-    
     
 }

@@ -32,21 +32,5 @@ public class PrsEmpSecteurId implements Serializable {
         return Objects.hash(esecSecteur, esecEmpSequence);
     }
 
-	public String getEsecSecteur() {
-		return esecSecteur;
-	}
-
-	public void setEsecSecteur(String esecSecteur) {
-		this.esecSecteur = esecSecteur;
-	}
-
-	public Long getEsecEmpSequence() {
-		return esecEmpSequence;
-	}
-
-	public void setEsecEmpSequence(Long esecEmpSequence) {
-		this.esecEmpSequence = esecEmpSequence;
-	}
-    
     
 }

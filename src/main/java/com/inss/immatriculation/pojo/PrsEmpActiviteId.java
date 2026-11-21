@@ -40,31 +40,5 @@ public class PrsEmpActiviteId implements Serializable {
         return Objects.hash(eactActivite, eactDtDebut, eactEmpSequence);
     }
 
-	public String getEactActivite() {
-		return eactActivite;
-	}
-
-	public void setEactActivite(String eactActivite) {
-		this.eactActivite = eactActivite;
-	}
-
-	public LocalDate getEactDtDebut() {
-		return eactDtDebut;
-	}
-
-	public void setEactDtDebut(LocalDate eactDtDebut) {
-		this.eactDtDebut = eactDtDebut;
-	}
-
-	public Long getEactEmpSequence() {
-		return eactEmpSequence;
-	}
-
-	public void setEactEmpSequence(Long eactEmpSequence) {
-		this.eactEmpSequence = eactEmpSequence;
-	}
-    
-    
-    
     
 }

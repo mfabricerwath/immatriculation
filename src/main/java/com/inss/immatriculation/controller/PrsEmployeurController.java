@@ -3,6 +3,7 @@ package com.inss.immatriculation.controller;
 import com.inss.immatriculation.dto.PrsEmployeurDto;
 import com.inss.immatriculation.pojo.PrsEmployeur;
 import com.inss.immatriculation.service.PrsEmployeurService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +23,11 @@ public class PrsEmployeurController {
 
     @GetMapping
     public List<PrsEmployeur> getAll() {
-        // Assurez-vous que findAll() existe dans votre service
         return employeurService.findAll(); 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PrsEmployeur> getById(@PathVariable Long id) {
-        // Assurez-vous que findById() renvoie un Optional ou gérez l'exception
         return employeurService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -36,38 +35,63 @@ public class PrsEmployeurController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody PrsEmployeur employeur) {
-        PrsEmployeur saved = employeurService.save(employeur);
-        
-        // On renvoie un objet JSON simple avec juste l'ID
-        Map<String, Object> response = new HashMap<>();
-        response.put("empSequence", saved.getEmpSequence());
-        response.put("empAffiliation", saved.getEmpAffiliation());
-        response.put("message", "Employeur créé avec succès");
-        
-        return ResponseEntity.ok(response);
+        try {
+            PrsEmployeur saved = employeurService.save(employeur);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("empSequence", saved.getEmpSequence());
+            response.put("empAffiliation", saved.getEmpAffiliation());
+            response.put("message", "Employeur créé avec succès");
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Erreur lors de la création : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PrsEmployeur> update(@PathVariable Long id, @RequestBody PrsEmployeur employeur) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody PrsEmployeur employeur) {
         try {
-            // La méthode update() de votre service gère l'historique
             PrsEmployeur updated = employeurService.update(id, employeur);
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Impossible de mettre à jour : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        employeurService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            employeurService.delete(id);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Employeur supprimé avec succès");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Impossible de supprimer : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
     }
     
+    // ==========================================
+    // 2. CORRECTION DE LA RECHERCHE PAR AFFILIATION
+    // ==========================================
     @GetMapping("/by-affiliation/{affiliation}")
-    public ResponseEntity<PrsEmployeurDto> getByAffiliation(@PathVariable Long affiliation) {
-        return ResponseEntity.ok(employeurService.findByAffiliation(affiliation));
+    public ResponseEntity<?> getByAffiliation(@PathVariable Long affiliation) {
+        // On suppose que le service renvoie un Optional ou null
+        PrsEmployeurDto employeurDto = employeurService.findByAffiliation(affiliation);
+        
+        if (employeurDto != null) {
+            return ResponseEntity.ok(employeurDto);
+        } else {
+            // Renvoyer une 404 propre pour que Angular puisse afficher "Aucun employeur trouvé"
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Aucun employeur trouvé avec l'affiliation : " + affiliation);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
     }
-    
-    
 }

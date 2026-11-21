@@ -37,29 +37,6 @@ public class PrsTrvServiceId implements Serializable {
         return Objects.hash(tserTrvImmatriculation, tserDtEmbauche, tserEmpSequence);
     }
 
-	public String getTserTrvImmatriculation() {
-		return tserTrvImmatriculation;
-	}
-
-	public void setTserTrvImmatriculation(String tserTrvImmatriculation) {
-		this.tserTrvImmatriculation = tserTrvImmatriculation;
-	}
-
-	public LocalDate getTserDtEmbauche() {
-		return tserDtEmbauche;
-	}
-
-	public void setTserDtEmbauche(LocalDate tserDtEmbauche) {
-		this.tserDtEmbauche = tserDtEmbauche;
-	}
-
-	public Long getTserEmpSequence() {
-		return tserEmpSequence;
-	}
-
-	public void setTserEmpSequence(Long tserEmpSequence) {
-		this.tserEmpSequence = tserEmpSequence;
-	}
-    
+	
     
 }

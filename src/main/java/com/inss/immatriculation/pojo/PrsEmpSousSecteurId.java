@@ -34,21 +34,6 @@ public class PrsEmpSousSecteurId implements Serializable {
         return Objects.hash(esseSousSecteur, secteurId);
     }
 
-	public String getEsseSousSecteur() {
-		return esseSousSecteur;
-	}
 
-	public void setEsseSousSecteur(String esseSousSecteur) {
-		this.esseSousSecteur = esseSousSecteur;
-	}
-
-	public PrsEmpSecteurId getSecteurId() {
-		return secteurId;
-	}
-
-	public void setSecteurId(PrsEmpSecteurId secteurId) {
-		this.secteurId = secteurId;
-	}
-    
     
 }

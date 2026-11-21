@@ -32,53 +32,6 @@ public class PrsEmpSousSecteur {
     })
     private PrsEmpSecteur secteur;
 
-	public PrsEmpSousSecteurId getId() {
-		return id;
-	}
-
-	public void setId(PrsEmpSousSecteurId id) {
-		this.id = id;
-	}
-
-	public String getEsseUtilCree() {
-		return esseUtilCree;
-	}
-
-	public void setEsseUtilCree(String esseUtilCree) {
-		this.esseUtilCree = esseUtilCree;
-	}
-
-	public String getEsseUtilModifie() {
-		return esseUtilModifie;
-	}
-
-	public void setEsseUtilModifie(String esseUtilModifie) {
-		this.esseUtilModifie = esseUtilModifie;
-	}
-
-	public LocalDateTime getEsseDtModifiee() {
-		return esseDtModifiee;
-	}
-
-	public void setEsseDtModifiee(LocalDateTime esseDtModifiee) {
-		this.esseDtModifiee = esseDtModifiee;
-	}
-
-	public LocalDateTime getEsseDtCreee() {
-		return esseDtCreee;
-	}
-
-	public void setEsseDtCreee(LocalDateTime esseDtCreee) {
-		this.esseDtCreee = esseDtCreee;
-	}
-
-	public PrsEmpSecteur getSecteur() {
-		return secteur;
-	}
-
-	public void setSecteur(PrsEmpSecteur secteur) {
-		this.secteur = secteur;
-	}
-    
+	
     
 }

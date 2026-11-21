@@ -2,11 +2,14 @@ package com.inss.immatriculation.pojo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Embeddable
+@Data
 public class PrsEmpSituationId implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,29 +48,5 @@ public class PrsEmpSituationId implements Serializable {
         return Objects.hash(esitOperation, esitDtLettre, esitEmpSequence);
     }
 
-	public String getEsitOperation() {
-		return esitOperation;
-	}
-
-	public void setEsitOperation(String esitOperation) {
-		this.esitOperation = esitOperation;
-	}
-
-	public LocalDate getEsitDtLettre() {
-		return esitDtLettre;
-	}
-
-	public void setEsitDtLettre(LocalDate esitDtLettre) {
-		this.esitDtLettre = esitDtLettre;
-	}
-
-	public Long getEsitEmpSequence() {
-		return esitEmpSequence;
-	}
-
-	public void setEsitEmpSequence(Long esitEmpSequence) {
-		this.esitEmpSequence = esitEmpSequence;
-	}
-    
-    
+	
 }

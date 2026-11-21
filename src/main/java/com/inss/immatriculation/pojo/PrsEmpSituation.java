@@ -10,9 +10,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "prs_emp_situation")
+@Data
 
 public class PrsEmpSituation {
 
@@ -67,79 +69,7 @@ public class PrsEmpSituation {
     }
     
 
-	public PrsEmpSituationId getId() {
-		return id;
-	}
-
-	public void setId(PrsEmpSituationId id) {
-		this.id = id;
-	}
-
-	public String getEsitUtilModifie() {
-		return esitUtilModifie;
-	}
-
-	public void setEsitUtilModifie(String esitUtilModifie) {
-		this.esitUtilModifie = esitUtilModifie;
-	}
-
-	public String getEsitRaison() {
-		return esitRaison;
-	}
-
-	public void setEsitRaison(String esitRaison) {
-		this.esitRaison = esitRaison;
-	}
-
-	public LocalDate getEsitDtEffet() {
-		return esitDtEffet;
-	}
-
-	public void setEsitDtEffet(LocalDate esitDtEffet) {
-		this.esitDtEffet = esitDtEffet;
-	}
-
-	public String getEsitUtilCree() {
-		return esitUtilCree;
-	}
-
-	public void setEsitUtilCree(String esitUtilCree) {
-		this.esitUtilCree = esitUtilCree;
-	}
-
-	public LocalDateTime getEsitDtCreee() {
-		return esitDtCreee;
-	}
-
-	public void setEsitDtCreee(LocalDateTime esitDtCreee) {
-		this.esitDtCreee = esitDtCreee;
-	}
-
-	public Long getEsitAffiliation() {
-		return esitAffiliation;
-	}
-
-	public void setEsitAffiliation(Long esitAffiliation) {
-		this.esitAffiliation = esitAffiliation;
-	}
-
-	public LocalDateTime getEsitDtModifiee() {
-		return esitDtModifiee;
-	}
-
-	public void setEsitDtModifiee(LocalDateTime esitDtModifiee) {
-		this.esitDtModifiee = esitDtModifiee;
-	}
-
-	public PrsEmployeur getEmployeur() {
-		return employeur;
-	}
-
-	public void setEmployeur(PrsEmployeur employeur) {
-		this.employeur = employeur;
-	}
-
-    // getters / setters
+	
    
     
 }

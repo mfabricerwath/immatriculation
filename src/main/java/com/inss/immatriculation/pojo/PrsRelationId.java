@@ -12,7 +12,7 @@ public class PrsRelationId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-	@Column(name = "rel_code", nullable = false, length = 6)
+	@Column(name = "rel_code", nullable = false, length = 50)
     private String relCode;
 
     @Column(name = "rel_trv_immatriculation", nullable = false, length = 10)
@@ -32,21 +32,5 @@ public class PrsRelationId implements Serializable {
         return Objects.hash(relCode, relTrvImmatriculation);
     }
 
-	public String getRelCode() {
-		return relCode;
-	}
-
-	public void setRelCode(String relCode) {
-		this.relCode = relCode;
-	}
-
-	public String getRelTrvImmatriculation() {
-		return relTrvImmatriculation;
-	}
-
-	public void setRelTrvImmatriculation(String relTrvImmatriculation) {
-		this.relTrvImmatriculation = relTrvImmatriculation;
-	}
-    
-    
+	
 }
